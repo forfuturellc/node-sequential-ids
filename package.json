@@ -1,0 +1,24 @@
+{
+  "name": "sequential-ids",
+  "version": "0.0.0-alpha.3.0",
+  "description": "centralized generation of sequential, human-readable ids",
+  "homepage": "https://github.com/forfuture-dev/node-sequential-ids",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/forfuture-dev/node-sequential-ids.git"
+  },
+  "bugs": "https://github.com/forfuture-dev/node-sequential-ids/issues",
+  "keywords": [
+    "centralized",
+    "sequential",
+    "human-readable",
+    "ids"
+  ],
+  "author": {
+    "name": "GochoMugo",
+    "email": "mugo@forfuture.co.ke"
+  },
+  "main": "index.js",
+  "dependencies": {}
+}
