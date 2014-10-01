@@ -7,5 +7,7 @@ global:
 
 MOCHA = ./node_modules/mocha/bin/mocha
 tests:
-	@ $(MOCHA) tests/*
+	@ $(MOCHA) tests/*.js
 	@ echo "> tests run!"
+
+.PHONY: tests

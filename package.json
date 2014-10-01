@@ -1,6 +1,6 @@
 {
   "name": "sequential-ids",
-  "version": "0.0.0-alpha.3.0",
+  "version": "0.0.0-alpha.3.1",
   "description": "centralized generation of sequential, human-readable ids",
   "homepage": "https://github.com/forfuture-dev/node-sequential-ids",
   "license": "MIT",
@@ -20,5 +20,8 @@
     "email": "mugo@forfuture.co.ke"
   },
   "main": "index.js",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "^1.21.4"
+  }
 }
