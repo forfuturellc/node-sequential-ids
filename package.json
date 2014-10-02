@@ -1,6 +1,6 @@
 {
   "name": "sequential-ids",
-  "version": "0.0.0-alpha.3.2",
+  "version": "0.0.0-alpha.4.0",
   "description": "centralized generation of sequential, human-readable ids",
   "homepage": "https://github.com/forfuture-dev/node-sequential-ids",
   "license": "MIT",
@@ -23,5 +23,8 @@
   "dependencies": {},
   "devDependencies": {
     "mocha": "^1.21.4"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha tests"
   }
 }

@@ -70,12 +70,6 @@ function parseId(id) {
   }
 }
 
-/**
-* If maxLetters is 0, we don't generate any letters
-* If maxDigits is 0, we don't generate any numbers
-* If numLetters and numDigits are greater than 0, we generate numbers
-* 
-*/
 function generateId(letters, numLetters, numbers, numNumbers) {
   if (numLetters > 0 && numNumbers <= 0) {
     var nextLetters = "A" === letters ? "AAA" : incrementLetters(letters);
