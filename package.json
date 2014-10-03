@@ -22,7 +22,7 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
-    "mocha": "~1.21.4"
+    "mocha": "latest"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha tests"
