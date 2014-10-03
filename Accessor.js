@@ -5,10 +5,15 @@ var Accessor = (function() {
   function Accessor(port) {
     this.port = port || 9876;
     this.url = "http://localhost:" + this.port;
-    http.get(this.url + "/ping").on("error", function(err) {
-      throw err;
-    });
   }
+
+  Accessor.prototype.ping = function(callback) {
+    http.get(this.url + "/ping", function(res) {
+      callback(null);
+    }).on("error", function(err) {
+      callback(err);
+    });
+  };
 
   Accessor.prototype.next = function(callback) {
     callback = callback || function() {};
@@ -16,7 +21,9 @@ var Accessor = (function() {
       var id = "";
       res.setEncoding("utf8");
       res.on("data", function(data) {id += data;});
-      res.on("end", function() {callback(id);});
+      res.on("end", function() {callback(null, id);});
+    }).on("error", function(err) {
+      callback(err);
     });
   };
 

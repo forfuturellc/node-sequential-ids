@@ -85,11 +85,11 @@ accessor.next(function(id) {
 
   * in a case where you may require more than one generator, you would allocate them to different ports. See ahead on how to target each of the different generators.
 
-```js
-var sequential = require("sequential-ids");
-var generatorA = new sequential.Generator({port: 8998});
-var generatorB = new sequential.Generator({port: 7667});
-```
+  ```js
+  var sequential = require("sequential-ids");
+  var generatorA = new sequential.Generator({port: 8998});
+  var generatorB = new sequential.Generator({port: 7667});
+  ```
 
   * A generator has the following methods:
 
@@ -114,8 +114,12 @@ var generatorB = new sequential.Generator({port: 7667});
   * an accessor has the following methods:
 
     * `Accessor#next(callback)`:
-        * requests generator for a new ID.
-        * The new ID is passed to the callback.
+      * callback signature: `function(err, id)`
+      * requests generator for a new ID.
+      * The new ID is passed to the callback, on success.
+    * `Accessor#ping(callback)`
+      * callback signature: `function(err)`
+      * pings the generator to see if it is online
 
   * All methods are **asynchronous**, the Node.js way
 
