@@ -71,7 +71,7 @@ describe("A Generator Server", function() {
     });
   });
 
-  it("gets next id from central server", function(done) {
+  it("serves ids off its port", function(done) {
     GEN = new Generator({digits: 3, letters: 3, port: 9999});
     GEN.start();
     http.get("http://localhost:9999/next", function(res) {
@@ -85,6 +85,32 @@ describe("A Generator Server", function() {
         GEN.stop();
         done();
       });
+    });
+  });
+
+  it("silently ignores repeated .start invocations", function() {
+    assert.doesNotThrow(function() {
+      var generator = new Generator({port: 8122});
+      generator.start();
+      generator.start();
+      generator.start();
+    });
+  });
+
+  it("silently ignores repeated .stop invocations", function() {
+    assert.doesNotThrow(function() {
+      var generator = new Generator({port: 8132});
+      generator.start();
+      generator.stop();
+      generator.stop();
+      generator.stop();
+    });
+  });
+
+  it("silently ignores .stop invocation before .start invocation", function() {
+  assert.doesNotThrow(function() {
+      var generator = new Generator();
+      generator.stop();
     });
   });
 

@@ -124,6 +124,8 @@ var Generator = (function() {
     this.generatedIds = [];
     this.unsavedIds = [];
     this.server;
+    this._started;
+    this._stopped;
   }
 
   Generator.prototype.generate = function() {
@@ -141,6 +143,7 @@ var Generator = (function() {
   };
 
   Generator.prototype.start = function() {
+    if (this._started) return;
     this.server = http.Server(function(req, res) {
       switch(req.url) {
       case "/next":
@@ -152,6 +155,7 @@ var Generator = (function() {
       }
     }.bind(this));
     this.server.listen(this.options.port);
+    this._started = true;
   };
 
   Generator.prototype.store = function() {
@@ -159,8 +163,10 @@ var Generator = (function() {
   };
 
   Generator.prototype.stop = function() {
+    if (this._stopped || !this._started) return;
     this.store();
     this.server.close();
+    this._stopped = true;
   };
 
   return Generator;
