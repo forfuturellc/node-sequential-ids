@@ -12,6 +12,7 @@ sequential and human-readable ids.
 |-------|-----:|
 |version|0.0.0-alpha.4.1|
 |dependencies|none|
+|node|0.11 0.10|
 |last updated|4th Oct, 2014|
 
 ## installation
