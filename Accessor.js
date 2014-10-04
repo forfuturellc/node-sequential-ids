@@ -8,6 +8,7 @@ var Accessor = (function() {
   }
 
   Accessor.prototype.ping = function(callback) {
+    callback = callback || function() {};
     http.get(this.url + "/ping", function(res) {
       callback(null);
     }).on("error", function(err) {
