@@ -1,7 +1,7 @@
 
 # node-sequential-ids
 
-<!--[![Build Status](https://travis-ci.org/forfuture-dev/node-sequential-ids.svg?branch=master)](https://travis-ci.org/forfuture-dev/node-sequential-ids)-->
+[![Build Status](https://travis-ci.org/forfuture-dev/node-sequential-ids.svg?branch=master)](https://travis-ci.org/forfuture-dev/node-sequential-ids)
 
 A [Node.js][nodejs] module that allows centralized generation of
 sequential and human-readable ids.
