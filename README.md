@@ -1,7 +1,7 @@
 
 # node-sequential-ids
 
-[![Build Status](https://travis-ci.org/forfuture-dev/node-sequential-ids.svg?branch=master)](https://travis-ci.org/forfuture-dev/node-sequential-ids)
+<!--[![Build Status](https://travis-ci.org/forfuture-dev/node-sequential-ids.svg?branch=master)](https://travis-ci.org/forfuture-dev/node-sequential-ids)-->
 
 A [Node.js][nodejs] module that allows centralized generation of
 sequential and human-readable ids.
@@ -10,9 +10,9 @@ sequential and human-readable ids.
 
 |aspect|detail|
 |-------|-----:|
-|version|0.0.0-alpha.4.0|
+|version|0.0.0-alpha.4.1|
 |dependencies|none|
-|last updated|2nd Oct, 2014|
+|last updated|4th Oct, 2014|
 
 ## installation
 
@@ -42,7 +42,7 @@ var new_id = generator.generate(); // => AAB - 001
 
 // possibly in another file
 var accessor = new sequential.Accessor();
-accessor.next(function(id) {
+accessor.next(function(err, id) {
   console.log("new id: %s", id); // => AAB - 002
 });
 ```
@@ -94,15 +94,12 @@ accessor.next(function(id) {
   * A generator has the following methods:
 
     * `Generator#start()`
-
       * starts the generator. If no Error is thrown, the generator will be ready for Accessors.
 
     * `Generator#generate()`
-
       * generates a new id. The new id is returned immediately.
 
     * `Generator#stop()`
-
       * stops the generator. No more ids will be given to Accessors.
 
 
