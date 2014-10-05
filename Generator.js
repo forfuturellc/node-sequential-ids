@@ -58,12 +58,13 @@ function fillZeros(num, numDigits) {
 function parseId(id) {
   if (! id) return null;
   id = id.trim();
-  var ltrs = id.match(/^(\w*)\s*-/);
-  var nums = id.match(/-\s*(\d*)$/);
+  // NOTE: using \w in Regexp matches both digits and letters
+  var ltrs = id.match(/^([A-z]*)\s*\-*/);
+  var nums = id.match(/\-*\s*(\d*)$/);
   var result = {};
-  if (ltrs && nums) {
-    result.numbers = nums[1];
-    result.letters = ltrs[1].toUpperCase();
+  if (ltrs || nums) {
+    result.numbers = nums[1] || "";
+    result.letters = ltrs[1] ? ltrs[1].toUpperCase() : "";
     return result;
   } else {
     return null;
@@ -72,7 +73,7 @@ function parseId(id) {
 
 function generateId(letters, numLetters, numbers, numNumbers) {
   if (numLetters > 0 && numNumbers <= 0) {
-    var nextLetters = "A" === letters ? "AAA" : incrementLetters(letters);
+    var nextLetters = incrementLetters(letters);
     var id = fillLetters(nextLetters, numLetters);
     return {id: id, letters: nextLetters, numbers: null};
   } else if (numLetters <= 0 && numNumbers > 0) {
@@ -112,6 +113,11 @@ var Generator = (function() {
     this.options.restore = options.restore || null;
     this.numbers = -1;
     this.letters = "A";
+    // workaround to get A's generated as first ids when
+    // options.digits is 0
+    if (options.digits === 0) {
+      this.letters = "@";
+    }
     if (options.restore) {
       var result = parseId(options.restore);
       if (result) {

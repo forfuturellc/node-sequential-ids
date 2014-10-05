@@ -26,8 +26,8 @@ describe("A Generator", function() {
   });
 
   it("restores from a saved ID", function() {
-    GEN = new Generator({restore: "AAA - 001"});
-    assert.equal("AAA - 002", GEN.generate(), "Incorrect Restoration");
+    GEN = new Generator({restore: "AA - 011"});
+    assert.equal("AA - 012", GEN.generate(), "Incorrect Restoration");
   });
 
   it("respects number of digits and letters", function() {
@@ -48,16 +48,31 @@ describe("A Generator", function() {
     assert.equal(id, "AA - 000", "letter overflow error");
   });
 
-  it("allows ignoring numbers part", function() {
+  it("allows ignoring numbers part using .digits option", function() {
     GEN = new Generator({digits: 0, letters: 3});
     var id = GEN.generate();
     assert.equal(id, "AAA", "numbers part not ignored");
+    id = GEN.generate();
+    assert.equal(id, "AAB", "failed incrementing letters when numbers ignored");
   });
 
-  it("allows ignoring letters part", function() {
+  it("allows ignoring numbers using a restore id", function() {
+    GEN = new Generator({restore: "AA"});
+    var id = GEN.generate();
+    assert.equal(id, "AB", "failed when restore id used to ignore number part");
+
+  });
+
+  it("allows ignoring letters part using .digits option", function() {
     GEN = new Generator({digits: 3, letters: 0});
     var id = GEN.generate();
     assert.equal(id, "000", "letters part not ignored");
+  });
+
+  it("allows ignoring letters using a restore id", function() {
+    GEN = new Generator({restore: "0023"});
+    var id = GEN.generate();
+    assert.equal(id, "0024", "Lettes part not ignored");
   });
 
 });
