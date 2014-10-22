@@ -75,6 +75,13 @@ describe("A Generator", function() {
     assert.equal(id, "0024", "Lettes part not ignored");
   });
 
+  it("suports multiple keys", function() {
+    GEN = new Generator({port: 7667, letters: 3, digits: 3});
+    GEN.add('testKey', {letters: 6, digits : 5});
+    assert.equal(GEN.generate(), "AAA - 000", "Got incorrect ID for default key");
+    assert.equal(GEN.generate('testKey'), "AAAAAA - 00000", "Got incorrect ID for key 'testKey'");
+  });
+
 });
 
 describe("A Generator Server", function() {
@@ -132,10 +139,11 @@ describe("A Generator Server", function() {
 });
 
 describe("Generators", function() {
-  it("allows more than 1 generator", function() {
+  it("allows more than 1 generator, in distinct ports", function() {
     var generator1 = new Generator({port: 7667, letters: 3, digits: 3});
     var generator2 = new Generator({port: 8877, letters: 3, digits: 3});
     assert.equal(generator1.generate(), "AAA - 000", "Got incorrect ID");
     assert.equal(generator2.generate(), "AAA - 000", "Got incorrect ID");
   });
 });
+
