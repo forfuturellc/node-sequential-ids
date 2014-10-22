@@ -16,9 +16,20 @@ var Accessor = (function() {
     });
   };
 
-  Accessor.prototype.next = function(callback) {
+  Accessor.prototype.next = function() {
+    var key, callback;
+    if(arguments.length === 1){
+        callback = arguments[0];
+    }
+    if(arguments.length > 1){
+        key = arguments[0];
+        callback = arguments[1];
+    }
+
     callback = callback || function() {};
-    http.get(this.url + "/next", function(res) {
+    var url = this.url + "/next" + (key ? '/'+key : '');
+
+    http.get(url, function(res) {
       var id = "";
       res.setEncoding("utf8");
       res.on("data", function(data) {id += data;});
