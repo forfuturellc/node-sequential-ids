@@ -46,9 +46,11 @@ describe("Accessors", function() {
     accessor1.next(function(err, id) {
       assert.equal(id, "AAA - 000", "Accessor 1 got wrong ID");
     });
-    accessor2.next(function(err, id) {
-      assert.equal(id, "AAA - 001", "Accessor 2 got wrong ID");
-      done();
+    process.nextTick(function() {
+      accessor2.next(function(err, id) {
+        assert.equal(id, "AAA - 001", "Accessor 2 got wrong ID");
+        done();
+      });
     });
   });
 });
