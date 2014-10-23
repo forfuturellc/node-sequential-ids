@@ -82,6 +82,19 @@ describe("A Generator", function() {
     assert.equal(GEN.generate('testKey'), "AAAAAA - 00000", "Got incorrect ID for key 'testKey'");
   });
 
+  it("returns true when adding a new key", function() {
+    GEN = new Generator({port: 23423});
+    GEN.start();
+    assert.equal(GEN.add('newKey'), true);
+  });
+
+  it("returns false when adding a repeated key", function() {
+    GEN = new Generator({port: 23424});
+    GEN.start();
+    GEN.add('newKey1');
+    assert.equal(GEN.add('newKey1'), false);
+  });
+
 });
 
 describe("A Generator Server", function() {

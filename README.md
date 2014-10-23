@@ -96,6 +96,8 @@ accessor.next('otherKey',function(err, id) {
 
     * `Generator#add(key, [options])`
       * adds a new key to the generator. If no Error is thrown, the generator will be ready for Accessors.
+      * returns `false` if `key` had already been added to the
+        generator; otherwise, returns `true`
 
       * **options** is an object having the following attributes:
 

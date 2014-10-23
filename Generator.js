@@ -114,6 +114,7 @@ var Generator = (function() {
 
   Generator.prototype.add = function(key, options){
     options = options || {};
+    if(this.keys[key]){ return false; }
     this.keys[key] = {};
     this.keys[key].options = {};
     this.keys[key].options.digits = int(options.digits, 6);
@@ -140,6 +141,8 @@ var Generator = (function() {
     }
     this.keys[key].generatedIds = [];
     this.keys[key].unsavedIds = [];
+
+    return true;
   };
 
   Generator.prototype.generate = function(key) {
