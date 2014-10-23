@@ -113,7 +113,7 @@ accessor.next('otherKey',function(err, id) {
         * `store`:
             * a function that will be called to store the IDs on disk for persistence.
             * the function is passed an array of IDs that have been generated.
-            * repeatedly storing the last id is useful to know where to start from in the next session.
+            * repeatedly storing the last ID is useful to know where to start from in the next session.
             * Defaults to `null`.
         * `store\_freq`:
             * frequency at which the store function should be called.
@@ -129,25 +129,33 @@ accessor.next('otherKey',function(err, id) {
             * Defaults to `null`.
 
     * `Generator#generate(key)`
-      * generates a new id for **key**. If no **key** is given, uses
-        the default one. The new id is returned immediately.
+      * generates a new ID for **key**. If no **key** is given, uses
+        the default one. The new ID is returned immediately.
+
+      * if the key does not exist and the option `autoAddKeys` is not
+        set,  returns `null`. If `autoAddKeys` is set, the key is
+        added on-the-fly with the default options, and returns the new
+        ID.
 
     * `Generator#stop()`
-      * stops the generator. No more ids will be given to Accessors.
+      * stops the generator. No more IDs will be given to Accessors.
 
 
 2. **new Accessor([port])**
 
-  * used to access ids.
+  * used to access IDs.
   * **port** is the port number of your generator. In case where, you did not specify a port when creating a Generator instance, you may leave this out. Defaults to `9876`.
   * an accessor may be initialized in a separate file. Ensure you got the port numbers correct.
   * an accessor has the following methods:
 
     * `Accessor#next(key,callback)`:
       * callback signature: `function(err, id)`
-      * requests generator for a new ID for **key**. If no key is
+      * asks the generator a new ID for **key**. If no key is
         given, uses the default one.
       * The new ID is passed to the callback, on success.
+      * If the key doesn't exist and the generator doesn't have
+        `autoAddKeys` set, an error is passed to the callback, and no
+        ID is generated.
     * `Accessor#ping(callback)`
       * callback signature: `function(err)`
       * pings the generator to see if it is online
@@ -161,7 +169,7 @@ accessor.next('otherKey',function(err, id) {
 * Implement these features:
     * `session(callback)` - passes the number of IDs generated in the session.
     * `.used(callback)` - passes the total number of IDs generated.
-    * `.semantics(callback)` - passes the remaining no. of ids to be generated before breaking our semantics specified while creating the generator.
+    * `.semantics(callback)` - passes the remaining no. of IDs to be generated before breaking our semantics specified while creating the generator.
 
 
 ## contribution

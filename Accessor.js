@@ -19,11 +19,16 @@ var Accessor = (function() {
   Accessor.prototype.next = function() {
     var key, callback;
     if(arguments.length === 1){
+      if(typeof arguments[0] === 'function'){
         callback = arguments[0];
+      }
+      else if(typeof arguments[0] === 'string'){
+        key = arguments[0];
+      }
     }
     if(arguments.length > 1){
-        key = arguments[0];
-        callback = arguments[1];
+      key = arguments[0];
+      callback = arguments[1];
     }
 
     callback = callback || function() {};
@@ -32,8 +37,13 @@ var Accessor = (function() {
     http.get(url, function(res) {
       var id = "";
       res.setEncoding("utf8");
-      res.on("data", function(data) {id += data;});
-      res.on("end", function() {callback(null, id);});
+      res.on("data", function(data){id += data;});
+      res.on("end", function(){
+        if(id === ''){
+          return callback(new Error("Can't generate an ID for undefined key '"+key+"'"));
+        }
+        callback(null, id);
+      });
     }).on("error", function(err) {
       callback(err);
     });

@@ -106,6 +106,7 @@ var Generator = (function() {
     this.options = {};
     this.keys = {};
     this.options.port = int(options.port, 9876);
+    this.options.autoAddKeys = options.autoAddKeys ? true : false;
     this.server;
     this._started;
     this._stopped;
@@ -147,6 +148,12 @@ var Generator = (function() {
 
   Generator.prototype.generate = function(key) {
     if(!key){ key = '__default'; }
+    if(!this.keys[key]){
+      if(!this.options.autoAddKeys){
+        return null;
+      }
+      this.add(key);
+    }
     var _new = generateId(this.keys[key].letters, this.keys[key].options.letters,
       this.keys[key].numbers, this.keys[key].options.digits);
     this.keys[key].letters = _new.letters;

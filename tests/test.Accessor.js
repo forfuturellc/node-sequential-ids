@@ -29,6 +29,28 @@ describe("An Accessor", function() {
     });
   });
 
+  it("passes an error to callback if key does not exist", function(done) {
+    ACS.next('newKey', function(err, id) {
+      assert.ok(err, "Can't generate an ID for undefined key 'newKey'");
+      done();
+    });
+  });
+
+
+  it("gets ID from new key if generator has autoAddKeys set", function(done) {
+    var GEN2 = new Generator({autoAddKeys: true, port: 2327});
+    GEN2.start();
+    var ACS2 = new Accessor(2327);
+
+    assert.doesNotThrow(function(){
+      ACS2.next('newKey',function(err, id){
+        assert.equal(id, "AAA - 000000", "Did not get next id");
+        GEN2.stop();
+        done();
+      });
+    }, 'Error passed to callback');
+  });
+
   it("passes an error to callback if gen. is down", function(done) {
     GEN.stop();
     ACS.next(function(err, id) {

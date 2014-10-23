@@ -25,6 +25,11 @@ describe("A Generator", function() {
     GEN.store(); // remaining ids
   });
 
+  it("has 3 letters, 6 digits IDs by default", function() {
+    GEN = new Generator();
+    assert.equal("AAA - 000000", GEN.generate(), "Incorrect ID format");
+  });
+
   it("restores from a saved ID", function() {
     GEN = new Generator({restore: "AA - 011"});
     assert.equal("AA - 012", GEN.generate(), "Incorrect Restoration");
@@ -95,6 +100,18 @@ describe("A Generator", function() {
     assert.equal(GEN.add('newKey1'), false);
   });
 
+
+  it("returns null when asked key does not exist", function() {
+    GEN = new Generator({port: 23425});
+    GEN.start();
+    assert.equal(GEN.generate('newKey1'), null);
+  });
+
+  it("adds unexistent key and returns a new ID if options.autoAddKeys is true", function(){
+    GEN = new Generator({port: 23426, autoAddKeys: true});
+    GEN.start();
+    assert.notEqual(GEN.generate('newKey1'),null);
+  });
 });
 
 describe("A Generator Server", function() {
@@ -148,7 +165,6 @@ describe("A Generator Server", function() {
       generator.stop();
     });
   });
-
 });
 
 describe("Generators", function() {
