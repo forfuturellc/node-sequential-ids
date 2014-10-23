@@ -104,46 +104,65 @@ var Generator = (function() {
   function Generator(options) {
     options = options || {};
     this.options = {};
-    this.options.digits = int(options.digits, 6);
-    this.options.letters = int(options.letters, 3);
+    this.keys = {};
     this.options.port = int(options.port, 9876);
-    this.options.store = typeof(options.store) === "function"
+    this.options.autoAddKeys = options.autoAddKeys ? true : false;
+    this.server;
+    this._started;
+    this._stopped;
+    this.add('__default',options);
+  }
+
+  Generator.prototype.add = function(key, options){
+    options = options || {};
+    if(this.keys[key]){ return false; }
+    this.keys[key] = {};
+    this.keys[key].options = {};
+    this.keys[key].options.digits = int(options.digits, 6);
+    this.keys[key].options.letters = int(options.letters, 3);
+    this.keys[key].options.store = typeof(options.store) === "function"
       ? options.store : function() {}
-    this.options.store_freq = int(options.store_freq, 1);
-    this.options.restore = options.restore || null;
-    this.numbers = -1;
-    this.letters = "A";
+    this.keys[key].options.store_freq = int(options.store_freq, 1);
+    this.keys[key].options.restore = options.restore || null;
+    this.keys[key].numbers = -1;
+    this.keys[key].letters = "A";
     // workaround to get A's generated as first ids when
     // options.digits is 0
     if (options.digits === 0) {
-      this.letters = "@";
+      this.keys[key].letters = "@";
     }
     if (options.restore) {
       var result = parseId(options.restore);
       if (result) {
-        this.numbers = parseInt(result.numbers);
-        this.options.digits = result.numbers.length;
-        this.letters = result.letters;
-        this.options.letters = result.letters.length;
+        this.keys[key].numbers = parseInt(result.numbers);
+        this.keys[key].options.digits = result.numbers.length;
+        this.keys[key].letters = result.letters;
+        this.keys[key].options.letters = result.letters.length;
       }
     }
-    this.generatedIds = [];
-    this.unsavedIds = [];
-    this.server;
-    this._started;
-    this._stopped;
-  }
+    this.keys[key].generatedIds = [];
+    this.keys[key].unsavedIds = [];
 
-  Generator.prototype.generate = function() {
-    var _new = generateId(this.letters, this.options.letters,
-      this.numbers, this.options.digits);
-    this.letters = _new.letters;
-    this.numbers = _new.numbers;
-    this.generatedIds.push(_new.id);
-    this.unsavedIds.push(_new.id);
-    if (this.options.store_freq === this.unsavedIds.length) {
-      this.options.store(this.unsavedIds);
-      this.unsavedIds = [];
+    return true;
+  };
+
+  Generator.prototype.generate = function(key) {
+    if(!key){ key = '__default'; }
+    if(!this.keys[key]){
+      if(!this.options.autoAddKeys){
+        return null;
+      }
+      this.add(key);
+    }
+    var _new = generateId(this.keys[key].letters, this.keys[key].options.letters,
+      this.keys[key].numbers, this.keys[key].options.digits);
+    this.keys[key].letters = _new.letters;
+    this.keys[key].numbers = _new.numbers;
+    this.keys[key].generatedIds.push(_new.id);
+    this.keys[key].unsavedIds.push(_new.id);
+    if (this.keys[key].options.store_freq === this.keys[key].unsavedIds.length) {
+      this.keys[key].options.store(this.keys[key].unsavedIds);
+      this.keys[key].unsavedIds = [];
     }
     return _new.id;
   };
@@ -151,26 +170,32 @@ var Generator = (function() {
   Generator.prototype.start = function() {
     if (this._started) return;
     this.server = http.Server(function(req, res) {
-      switch(req.url) {
-      case "/next":
-        res.end(this.generate());
-        break;
-      case "/ping":
-        res.end("pong");
-        break;
+      if(req.url.match(/(^\/\w+)(?:\/(\w+))?/)){
+        var action = RegExp.$1, key = RegExp.$2 || '__default';
+        switch(action) {
+          case "/next":
+            res.end(this.generate(key));
+            break;
+          case "/ping":
+            res.end("pong");
+            break;
+        }
       }
     }.bind(this));
     this.server.listen(this.options.port);
     this._started = true;
   };
 
-  Generator.prototype.store = function() {
-    if (this.unsavedIds.length > 0) this.options.store(this.unsavedIds);
+  Generator.prototype.store = function(key) {
+    if(!key){ key = '__default'; }
+    if (this.keys[key].unsavedIds.length > 0) this.keys[key].options.store(this.keys[key].unsavedIds);
   };
 
   Generator.prototype.stop = function() {
     if (this._stopped || !this._started) return;
-    this.store();
+    for(var key in this.keys){
+      this.store(key);
+    }
     this.server.close();
     this._stopped = true;
   };
