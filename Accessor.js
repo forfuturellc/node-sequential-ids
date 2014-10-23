@@ -10,7 +10,11 @@ var Accessor = (function() {
   Accessor.prototype.ping = function(callback) {
     callback = callback || function() {};
     http.get(this.url + "/ping", function(res) {
-      callback(null);
+      // Waiting for the `end` event seems to require that
+      // we first listen to `data` event Otherwise, the
+      // callback wont be fired.
+      res.on("data", function(){});
+      res.on("end", function() {callback(null);});
     }).on("error", function(err) {
       callback(err);
     });

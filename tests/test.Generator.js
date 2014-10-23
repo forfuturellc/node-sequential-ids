@@ -123,8 +123,29 @@ describe("A Generator Server", function() {
   });
 
   it("silently ignores .stop invocation before .start invocation", function() {
-  assert.doesNotThrow(function() {
+    assert.doesNotThrow(function() {
       var generator = new Generator();
+      generator.stop();
+    });
+  });
+
+  it.skip("allows starting and stopping repeatedly", function() {
+    assert.doesNotThrow(function() {
+      var port = 7609;
+      var generator = new Generator({port: port});
+      var accessor = new (require("../Accessor"))(port);
+      function getError(err) {assert.ok(err);}
+      function getNoError(err) {console.log(err);assert.ok(! err);}
+      //for (var i = 0; i <= 3; i++) {
+        accessor.ping(getError);
+        generator.start(function() {
+          accessor.ping(getNoError);
+          process.nextTick(function() {
+            generator.stop();
+            accessor.ping(getError);
+          });
+        });
+      //}
       generator.stop();
     });
   });

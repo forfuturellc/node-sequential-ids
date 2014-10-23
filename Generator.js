@@ -130,8 +130,7 @@ var Generator = (function() {
     this.generatedIds = [];
     this.unsavedIds = [];
     this.server;
-    this._started;
-    this._stopped;
+    this._online;
   }
 
   Generator.prototype.generate = function() {
@@ -148,8 +147,9 @@ var Generator = (function() {
     return _new.id;
   };
 
-  Generator.prototype.start = function() {
-    if (this._started) return;
+  Generator.prototype.start = function(done) {
+    done = done || function() {};
+    if (this._online) return;
     this.server = http.Server(function(req, res) {
       switch(req.url) {
       case "/next":
@@ -160,8 +160,8 @@ var Generator = (function() {
         break;
       }
     }.bind(this));
-    this.server.listen(this.options.port);
-    this._started = true;
+    this.server.listen(this.options.port, done);
+    this._online = true;
   };
 
   Generator.prototype.store = function() {
@@ -169,10 +169,10 @@ var Generator = (function() {
   };
 
   Generator.prototype.stop = function() {
-    if (this._stopped || !this._started) return;
+    if (! this._online) return;
     this.store();
     this.server.close();
-    this._stopped = true;
+    this._online = false;
   };
 
   return Generator;
