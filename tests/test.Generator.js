@@ -25,6 +25,11 @@ describe("A Generator", function() {
     GEN.store(); // remaining ids
   });
 
+  it("has 3 letters, 6 digits IDs by default", function() {
+    GEN = new Generator();
+    assert.equal("AAA - 000000", GEN.generate(), "Incorrect ID format");
+  });
+
   it("restores from a saved ID", function() {
     GEN = new Generator({restore: "AA - 011"});
     assert.equal("AA - 012", GEN.generate(), "Incorrect Restoration");
@@ -75,6 +80,38 @@ describe("A Generator", function() {
     assert.equal(id, "0024", "Lettes part not ignored");
   });
 
+  it("suports multiple keys", function() {
+    GEN = new Generator({port: 7667, letters: 3, digits: 3});
+    GEN.add('testKey', {letters: 6, digits : 5});
+    assert.equal(GEN.generate(), "AAA - 000", "Got incorrect ID for default key");
+    assert.equal(GEN.generate('testKey'), "AAAAAA - 00000", "Got incorrect ID for key 'testKey'");
+  });
+
+  it("returns true when adding a new key", function() {
+    GEN = new Generator({port: 23423});
+    GEN.start();
+    assert.equal(GEN.add('newKey'), true);
+  });
+
+  it("returns false when adding a repeated key", function() {
+    GEN = new Generator({port: 23424});
+    GEN.start();
+    GEN.add('newKey1');
+    assert.equal(GEN.add('newKey1'), false);
+  });
+
+
+  it("returns null when asked key does not exist", function() {
+    GEN = new Generator({port: 23425});
+    GEN.start();
+    assert.equal(GEN.generate('newKey1'), null);
+  });
+
+  it("adds unexistent key and returns a new ID if options.autoAddKeys is true", function(){
+    GEN = new Generator({port: 23426, autoAddKeys: true});
+    GEN.start();
+    assert.notEqual(GEN.generate('newKey1'),null);
+  });
 });
 
 describe("A Generator Server", function() {
@@ -149,14 +186,14 @@ describe("A Generator Server", function() {
       generator.stop();
     });
   });
-
 });
 
 describe("Generators", function() {
-  it("allows more than 1 generator", function() {
+  it("allows more than 1 generator, in distinct ports", function() {
     var generator1 = new Generator({port: 7667, letters: 3, digits: 3});
     var generator2 = new Generator({port: 8877, letters: 3, digits: 3});
     assert.equal(generator1.generate(), "AAA - 000", "Got incorrect ID");
     assert.equal(generator2.generate(), "AAA - 000", "Got incorrect ID");
   });
 });
+

@@ -1,6 +1,6 @@
 {
   "name": "sequential-ids",
-  "version": "0.0.0-alpha.4.2",
+  "version": "0.0.0-alpha.5.0",
   "description": "centralized generation of sequential, human-readable ids",
   "homepage": "https://github.com/forfuture-dev/node-sequential-ids",
   "license": "MIT",
