@@ -10,10 +10,10 @@ sequential and human-readable ids.
 
 |aspect|detail|
 |-------|-----:|
-|version|0.0.0-alpha.5.0|
+|version|0.0.0|
 |dependencies|none|
 |node|0.11, 0.10|
-|last updated|24th Oct, 2014|
+|last updated|11th December, 2014|
 
 
 ## installation
