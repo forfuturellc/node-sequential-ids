@@ -365,4 +365,6 @@ var Generator = (function() {
   return Generator;
 })();
 
+
+// Module exports
 exports = module.exports = Generator;
