@@ -282,7 +282,7 @@ var Generator = (function() {
   */
   Generator.prototype.generate = function(key) {
     debug("generating new ID for Key: %s", key);
-    if (!key) {key = '__default';}
+    if (! key) {key = '__default';}
     if (! this.keys[key]) {
       if (! this.options.autoAddKeys) {
         return null;
@@ -366,5 +366,22 @@ var Generator = (function() {
 })();
 
 
+/**
+* To allow use of same Generator in a process, without using ports
+* a new Generator is defined on the "global" object. It will be accessed
+* using Accessors without ports
+*/
+function globalGenerator(options) {
+  var generator = new Generator(options);
+  Object.defineProperty(global, "SequentialGeneratorNext", {
+    get: generator.generate.bind(generator),
+    enumerable: false,
+    configurable: false
+  });
+  return generator;
+}
+
+
 // Module exports
 exports = module.exports = Generator;
+exports.globalGenerator = globalGenerator;

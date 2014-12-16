@@ -19,12 +19,19 @@ var Accessor = (function() {
   /**
   * Constructor for an Accessor. "port" is the port number of the port
   * which the accessor should listen on. Defaults to 9876.
+  * If no port number is passed, we look for the Generator from the global
+  * object
   *
   * @param  {Number}  port
   */
   function Accessor(port) {
     debug("Instantiating an Accessor");
-    this.port = port || 9876;
+    this.port = this.url = this.dependOnGlobal = null;
+    if (port) {
+      this.port = port || 9876;
+    } else {
+      this.dependOnGlobal = true;
+    }
     this.url = "http://localhost:" + this.port;
   }
 
@@ -35,6 +42,10 @@ var Accessor = (function() {
   */
   Accessor.prototype.ping = function(callback) {
     debug("pinging Generator at Port: %d", this.port);
+    if (this.dependOnGlobal) {
+      callback(null);
+      return;
+    }
     callback = callback || function() {};
     http.get(this.url + "/ping", function(res) {
       // Waiting for the `end` event seems to require that
@@ -49,6 +60,8 @@ var Accessor = (function() {
 
   /**
   * Asking Generator for the next ID. The Id is passed to the callback.
+  * If a port has been set then we use a http request. Otherwise, we
+  * use the global Generator
   *
   * @param  {String}  key [Optional]
   * @param  {Function} callback(err, id)
@@ -61,8 +74,14 @@ var Accessor = (function() {
     } else {
       callback = callback || function() {};
     }
-    var url = this.url + "/next" + (key ? '/'+key : '');
 
+    if (this.dependOnGlobal) {
+      var id = global.SequentialGeneratorNext;
+      callback(null, id);
+      return id;
+    }
+
+    var url = this.url + "/next" + (key ? '/'+key : '');
     http.get(url, function(res) {
       var id = "";
       res.setEncoding("utf8");
@@ -81,6 +100,8 @@ var Accessor = (function() {
 
   return Accessor;
 })();
+
+
 
 
 // Module exports
