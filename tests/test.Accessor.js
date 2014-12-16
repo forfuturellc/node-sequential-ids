@@ -4,9 +4,9 @@ var Generator = require("../Generator");
 
 var ACS, GEN;
 
-beforeEach(function() {
+beforeEach(function(done) {
   GEN = new Generator({letters: 3, digits: 3});
-  GEN.start();
+  GEN.start(done);
 });
 
 afterEach(function() {
