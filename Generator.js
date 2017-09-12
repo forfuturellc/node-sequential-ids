@@ -162,7 +162,7 @@ var Generator = (function() {
     this.keys[key].generatedIds.push(_new.id);
     this.keys[key].unsavedIds.push(_new.id);
     if (this.keys[key].options.store_freq === this.keys[key].unsavedIds.length) {
-      this.keys[key].options.store(this.keys[key].unsavedIds);
+      this.keys[key].options.store(key, this.keys[key].unsavedIds);
       this.keys[key].unsavedIds = [];
     }
     return _new.id;
@@ -190,13 +190,13 @@ var Generator = (function() {
 
   Generator.prototype.store = function(key) {
     if(!key){ key = '__default'; }
-    if (this.keys[key].unsavedIds.length > 0) this.keys[key].options.store(this.keys[key].unsavedIds);
+    if (this.keys[key].unsavedIds.length > 0) this.keys[key].options.store(key, this.keys[key].unsavedIds);
   };
 
   Generator.prototype.stop = function() {
     if (! this._online) return;
     for(var key in this.keys){
-      this.store(key);
+      this.store(key, this.keys[key].unsavedIds);
     }
     this.server.close();
     this._online = false;
