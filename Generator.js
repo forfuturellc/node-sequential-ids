@@ -71,7 +71,7 @@ function parseId(id) {
   }
 }
 
-function generateId(letters, numLetters, numbers, numNumbers) {
+function generateId(letters, numLetters, numbers, numNumbers, separator) {
   if (numLetters > 0 && numNumbers <= 0) {
     var nextLetters = incrementLetters(letters);
     var id = fillLetters(nextLetters, numLetters);
@@ -89,7 +89,7 @@ function generateId(letters, numLetters, numbers, numNumbers) {
       nextLetters = incrementLetters(letters);
     }
     var id = fillLetters(nextLetters, numLetters)
-      + " - " + fillZeros(nextNumber, numNumbers);
+      + separator + fillZeros(nextNumber, numNumbers);
     return {id: id, letters: nextLetters, numbers: nextNumber};
   }
 }
@@ -120,6 +120,7 @@ var Generator = (function() {
     this.keys[key].options = {};
     this.keys[key].options.digits = int(options.digits, 6);
     this.keys[key].options.letters = int(options.letters, 3);
+    this.keys[key].options.separator = options.separator || " - ";
     this.keys[key].options.store = typeof(options.store) === "function"
       ? options.store : function() {}
     this.keys[key].options.store_freq = int(options.store_freq, 1);
@@ -155,13 +156,13 @@ var Generator = (function() {
       this.add(key);
     }
     var _new = generateId(this.keys[key].letters, this.keys[key].options.letters,
-      this.keys[key].numbers, this.keys[key].options.digits);
+      this.keys[key].numbers, this.keys[key].options.digits, this.keys[key].options.separator);
     this.keys[key].letters = _new.letters;
     this.keys[key].numbers = _new.numbers;
     this.keys[key].generatedIds.push(_new.id);
     this.keys[key].unsavedIds.push(_new.id);
     if (this.keys[key].options.store_freq === this.keys[key].unsavedIds.length) {
-      this.keys[key].options.store(this.keys[key].unsavedIds);
+      this.keys[key].options.store(key, this.keys[key].unsavedIds);
       this.keys[key].unsavedIds = [];
     }
     return _new.id;
@@ -189,13 +190,13 @@ var Generator = (function() {
 
   Generator.prototype.store = function(key) {
     if(!key){ key = '__default'; }
-    if (this.keys[key].unsavedIds.length > 0) this.keys[key].options.store(this.keys[key].unsavedIds);
+    if (this.keys[key].unsavedIds.length > 0) this.keys[key].options.store(key, this.keys[key].unsavedIds);
   };
 
   Generator.prototype.stop = function() {
     if (! this._online) return;
     for(var key in this.keys){
-      this.store(key);
+      this.store(key, this.keys[key].unsavedIds);
     }
     this.server.close();
     this._online = false;
