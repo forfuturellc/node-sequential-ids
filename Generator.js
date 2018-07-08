@@ -89,7 +89,7 @@ function generateId(letters, numLetters, numbers, numNumbers, delimiter) {
       nextLetters = incrementLetters(letters);
     }
     var id = fillLetters(nextLetters, numLetters)
-      + " " + delimiter + " " + fillZeros(nextNumber, numNumbers);
+      + delimiter + fillZeros(nextNumber, numNumbers);
     return {id: id, letters: nextLetters, numbers: nextNumber};
   }
 }
@@ -102,7 +102,7 @@ function int(_var, _default) {
 
 function delimter(_var, _default) {
   if (typeof(_var) === "undefined") return _default;
-  return /^[/\-:,.%"'+=&*#@~!;^`]$/.test(_var) ? _var : _default;
+  return /^\s|[\/\-:,.%"'+=&*#@~!;^`]|\s/.test(_var) ? _var : _default;
 }
 
 var Generator = (function() {
@@ -125,7 +125,7 @@ var Generator = (function() {
     this.keys[key].options = {};
     this.keys[key].options.digits = int(options.digits, 6);
     this.keys[key].options.letters = int(options.letters, 3);
-    this.keys[key].options.delimiter = delimter(options.delimiter, "-");
+    this.keys[key].options.delimiter = delimter(options.delimiter, " - ");
     this.keys[key].options.store = typeof(options.store) === "function"
       ? options.store : function() {}
     this.keys[key].options.store_freq = int(options.store_freq, 1);
