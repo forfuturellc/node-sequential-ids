@@ -35,7 +35,7 @@ $ npm install sequential-ids --save
 var sequential = require("sequential-ids");
 
 var generator = new sequential.Generator({
-  digits: 6, letters: 3,
+  digits: 6, letters: 3, delimiter: "/",
   store: function(key, ids) {
     db.store(key, ids[ids.length - 1]);
   },
@@ -51,17 +51,17 @@ generator.add('otherKey', {
 });
 
 generator.start();
-var new_id_1   = generator.generate();           // => AAB - 001
-var new_id_2   = generator.generate();           // => AAB - 002
+var new_id_1   = generator.generate();           // => AAB / 000001
+var new_id_2   = generator.generate();           // => AAB / 000002
 // ...
-var other_id_1 = generator.generate('otherKey'); // => A - 01
+var other_id_1 = generator.generate('otherKey'); // => A  01
 var other_id_2 = generator.generate('otherKey'); // => A - 02
 // ...
 
 // possibly in another file
 var accessor = new sequential.Accessor();
 accessor.next(function(err, id) {
-  console.log("new id: %s", id); // => AAB - 003
+  console.log("new id: %s", id); // => AAB / 000003
 });
 
 accessor.next('otherKey',function(err, id) {
@@ -117,6 +117,9 @@ accessor.next('otherKey',function(err, id) {
             * no. of letters to use.
             * assigning `0` (zero) lets you ignore the letters part
             * Defaults to `3`.
+        * `delimiter`:
+            * delimiter to use between digits and letters.
+            * Defaults to `-`.            
         * `store`:
             * a function that will be called to store the IDs on disk for
               persistence.

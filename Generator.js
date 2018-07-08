@@ -71,7 +71,7 @@ function parseId(id) {
   }
 }
 
-function generateId(letters, numLetters, numbers, numNumbers) {
+function generateId(letters, numLetters, numbers, numNumbers, delimiter) {
   if (numLetters > 0 && numNumbers <= 0) {
     var nextLetters = incrementLetters(letters);
     var id = fillLetters(nextLetters, numLetters);
@@ -89,7 +89,7 @@ function generateId(letters, numLetters, numbers, numNumbers) {
       nextLetters = incrementLetters(letters);
     }
     var id = fillLetters(nextLetters, numLetters)
-      + " - " + fillZeros(nextNumber, numNumbers);
+      + delimiter + fillZeros(nextNumber, numNumbers);
     return {id: id, letters: nextLetters, numbers: nextNumber};
   }
 }
@@ -98,6 +98,11 @@ function int(_var, _default) {
   if (typeof(_var) === "undefined") return _default;
   var _int = parseInt(_var);
   return isNaN(_int) ? _default : _int;
+}
+
+function delimter(_var, _default) {
+  if (typeof(_var) === "undefined") return _default;
+  return /^\s|[\/\-:,.%"'+=&*#@~!;^`]|\s/.test(_var) ? _var : _default;
 }
 
 var Generator = (function() {
@@ -120,6 +125,7 @@ var Generator = (function() {
     this.keys[key].options = {};
     this.keys[key].options.digits = int(options.digits, 6);
     this.keys[key].options.letters = int(options.letters, 3);
+    this.keys[key].options.delimiter = delimter(options.delimiter, " - ");
     this.keys[key].options.store = typeof(options.store) === "function"
       ? options.store : function() {}
     this.keys[key].options.store_freq = int(options.store_freq, 1);
@@ -155,7 +161,7 @@ var Generator = (function() {
       this.add(key);
     }
     var _new = generateId(this.keys[key].letters, this.keys[key].options.letters,
-      this.keys[key].numbers, this.keys[key].options.digits);
+      this.keys[key].numbers, this.keys[key].options.digits, this.keys[key].options.delimiter);
     this.keys[key].letters = _new.letters;
     this.keys[key].numbers = _new.numbers;
     this.keys[key].generatedIds.push(_new.id);
